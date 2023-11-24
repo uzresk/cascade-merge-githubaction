@@ -1,0 +1,24 @@
+name: "Cascading Auto-Merge Action"
+description: "GitHub action to automatically merge downstream branches based on semantic versioning"
+
+inputs:
+  GITHUB_TOKEN:
+    description: 'GitHub token'
+    required: true
+  MERGE_TOKEN:
+    description: 'If needed, pass in a token to be used to merge prs for bypassing branch protections'
+    required: false
+  prefixes:
+    description: 'List of prefixes to match'
+    required: true
+  refBranch:
+    description: 'branch to use for the default PR'
+    required: true
+    
+runs:
+  using: node12
+  main: dist/index.js
+
+branding:
+  icon: 'check-square'  
+  color: 'green'
