@@ -8746,20 +8746,23 @@ async function cascadingBranchMerge (
   const mergeLists = []
   let mergeList = []
 
-  prefixes.forEach(function (prefix) {
-    console.log('prefix:', prefix)
-    if (headBranch.startsWith(prefix)) {
-      mergeListHead = getBranchMergeOrder(prefix, headBranch, branches)
-    }
+  // prefixがない場合は,処理しない
+  if (prefixes.length === 0) {
+    prefixes.forEach(function (prefix) {
+      console.log('prefix:', prefix)
+      if (headBranch.startsWith(prefix)) {
+        mergeListHead = getBranchMergeOrder(prefix, headBranch, branches)
+      }
 
-    console.log("prefix:[", prefix, "baseBranch:[", baseBranch, "]startsWith:", baseBranch.startsWith(prefix))
-    if (baseBranch.startsWith(prefix)) {
-      console.log("in");
-      mergeListBase = getBranchMergeOrder(prefix, baseBranch, branches)
-      // baseBranchをrelease/にすると、存在しないbranchにマージをかけに行こうとしてしまうのでコメントアウトしておく。
-      // mergeListBase.push(refBranch)
-    }
-  })
+      console.log("prefix:[", prefix, "baseBranch:[", baseBranch, "]startsWith:", baseBranch.startsWith(prefix))
+      if (baseBranch.startsWith(prefix)) {
+        console.log("in");
+        mergeListBase = getBranchMergeOrder(prefix, baseBranch, branches)
+        // baseBranchをrelease/にすると、存在しないbranchにマージをかけに行こうとしてしまうのでコメントアウトしておく。
+        // mergeListBase.push(refBranch)
+      }
+    })
+  }
 
   // baseBranchにマージされたら、developにもマージしに行くようにする
   mergeListDevelop.push(baseBranch)
@@ -8791,7 +8794,7 @@ async function cascadingBranchMerge (
             base: mergeList[i + 1],
             head: mergeList[i],
             title: `Automatic merge from ${mergeList[i]} -> ${mergeList[i + 1]}`,
-            body: 'このPullRequestは, GithubActionsで自動的に作成されました。'
+            body: 'This PR was created automatically by the cascading downstream merge action.'
           }
         )
       } catch (error) { // could not create the PR
